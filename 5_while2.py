@@ -14,12 +14,24 @@
     Программа: Программирую
     
 """
-
 def ask_user():
     """
     Замените pass на ваш код
     """
-    pass
-    
+    words = ask_user_dict()
+    while True:
+      user_say = input('Пользователь: ')
+      user_input = words.get(user_say)
+      if user_input is not None:
+        print(f'Программа: {user_input}')
+      else:
+        break
+
+def ask_user_dict():
+  words = {"Как дела": "Хорошо!", "Что делаешь?": "Программирую"}
+  return words
+
+
+
 if __name__ == "__main__":
     ask_user()
