@@ -31,6 +31,8 @@ def main():
           return 'ВУЗ'
         elif age > 24:
           return 'работа'
+        else:
+          return 'не родился'
     result = (occupation(age))
     print(result)
 
