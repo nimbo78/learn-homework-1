@@ -14,6 +14,7 @@
 """
 import logging
 import settings
+import ephem
 
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 
@@ -23,9 +24,24 @@ logging.basicConfig(format='%(name)s - %(levelname)s - %(message)s',
 )
 
 
-PROXY = {'proxy_url': settings.PROXY_URL,
-    'urllib3_proxy_kwargs': {'username': settings.PROXY_USERNAME, 'password': settings.PROXY_PASSWORD}}
+PROXY = {
+    'proxy_url': 'socks5://t1.learn.python.ru:1080',
+    'urllib3_proxy_kwargs': {
+        'username': 'learn', 
+        'password': 'python'
+    }
+}
 
+def planet(bot, update):
+    planet_text = update.message.text # Mars
+    planets = [name for _0, _1, name in ephem._libastro.builtin_planets()] # planets
+    if planet_text in planets:
+      
+    #planet_req = ephem.Mars('2000/01/01')
+    constellation = ephem.constellation(planet_req)
+    print(constellation)
+    print([name for _0, _1, name in ephem._libastro.builtin_planets()])
+    update.message.reply_text(constellation)
 
 def greet_user(bot, update):
     text = 'Вызван /start'
@@ -40,10 +56,13 @@ def talk_to_me(bot, update):
  
 
 def main():
-    mybot = Updater(settings.API_KEY, request_kwargs=PROXY)
+    mybot = Updater(settings.API_KEY,
+    #request_kwargs=PROXY
+    )
     
     dp = mybot.dispatcher
     dp.add_handler(CommandHandler("start", greet_user))
+    dp.add_handler(CommandHandler("planet", planet))
     dp.add_handler(MessageHandler(Filters.text, talk_to_me))
     
     mybot.start_polling()
