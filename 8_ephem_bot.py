@@ -15,10 +15,11 @@
 import logging
 import settings
 import ephem
+from datetime import date
 
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 
-logging.basicConfig(format='%(name)s - %(levelname)s - %(message)s',
+logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
                     level=logging.INFO,
                     filename='bot.log'
 )
@@ -33,15 +34,18 @@ PROXY = {
 }
 
 def planet(bot, update):
-    planet_text = update.message.text # Mars
-    planets = [name for _0, _1, name in ephem._libastro.builtin_planets()] # planets
-    if planet_text in planets:
-      
-    #planet_req = ephem.Mars('2000/01/01')
-    constellation = ephem.constellation(planet_req)
-    print(constellation)
-    print([name for _0, _1, name in ephem._libastro.builtin_planets()])
-    update.message.reply_text(constellation)
+    current_date = date.today().strftime("%d/%m/%Y")
+    user_input = update.message.text.split(' ')[-1].title()
+    planets = [name for _0, _1, name in ephem._libastro.builtin_planets()]
+    if user_input in planets:
+        planet_obj = getattr(ephem, user_input)(current_date)
+        try:
+            planet_constellation = ephem.constellation(planet_obj)[-1]
+        except TypeError:
+            update.message.reply_text(f'{user_input} is a moon..')
+        update.message.reply_text(f'{user_input} in {planet_constellation} at {current_date}')
+    else:
+        update.message.reply_text(f'I do not know what is the {user_input} is..')
 
 def greet_user(bot, update):
     text = 'Вызван /start'
@@ -56,9 +60,7 @@ def talk_to_me(bot, update):
  
 
 def main():
-    mybot = Updater(settings.API_KEY,
-    #request_kwargs=PROXY
-    )
+    mybot = Updater(settings.API_KEY)
     
     dp = mybot.dispatcher
     dp.add_handler(CommandHandler("start", greet_user))
