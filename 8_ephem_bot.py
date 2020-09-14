@@ -28,6 +28,7 @@ def planet(bot, update):
     current_date = date.today().strftime("%d/%m/%Y")
     user_input = update.message.text.split(' ')[-1].title()
     planets = [name for _0, _1, name in ephem._libastro.builtin_planets()]
+    
     if user_input in planets:
         planet_obj = getattr(ephem, user_input)(current_date)
         try:
