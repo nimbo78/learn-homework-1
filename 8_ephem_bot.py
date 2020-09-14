@@ -24,15 +24,6 @@ logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s
                     filename='bot.log'
 )
 
-
-PROXY = {
-    'proxy_url': 'socks5://t1.learn.python.ru:1080',
-    'urllib3_proxy_kwargs': {
-        'username': 'learn', 
-        'password': 'python'
-    }
-}
-
 def planet(bot, update):
     current_date = date.today().strftime("%d/%m/%Y")
     user_input = update.message.text.split(' ')[-1].title()
